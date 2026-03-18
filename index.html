@@ -1077,7 +1077,7 @@
         <input
           type="text"
           id="githubInput"
-          placeholder="e.g., simonw or https://github.com/simonw/datasette"
+          placeholder="e.g., crabblack or https://github.com/crabblack/agent"
           onkeypress="if(event.key==='Enter') generateScore()"
           maxlength="255"
         />
@@ -1095,7 +1095,7 @@
     <div class="empty-state" id="emptyState">
       <div class="empty-icon">📊</div>
       <div class="empty-text">Enter a GitHub username to get started</div>
-      <div class="empty-hint">Example: simonw</div>
+      <div class="empty-hint">Example: crabblack</div>
     </div>
 
     <!-- Share URL Banner -->
@@ -1131,8 +1131,8 @@
   <script>
     // ── Supabase Config ──
     // Replace these with your Supabase project URL and anon key
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const SUPABASE_URL = 'https://jtyccmacqsituzdcrfod.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_4CTGhdAFrFaHI7fbzcmuew_0si8mrab';
 
     let _supabase = null;
     function getSupabase() {
@@ -1147,6 +1147,13 @@
       const db = getSupabase();
       if (!db) return null;
       try {
+        // Delete any existing entry for this username/repo so no duplicates
+        if (repo) {
+          await db.from('scorecards').delete().eq('github_username', username).eq('repo', repo);
+        } else {
+          await db.from('scorecards').delete().eq('github_username', username).is('repo', null);
+        }
+
         const { data, error } = await db
           .from('scorecards')
           .insert({
@@ -2037,7 +2044,7 @@
     // Copy to clipboard
     function copyCardToClipboard(username, tier, score) {
       const shareInput = document.getElementById('shareUrlInput');
-      const shareUrl = shareInput && shareInput.value ? shareInput.value : 'https://clarosi.ie/scorecard';
+      const shareUrl = shareInput && shareInput.value ? shareInput.value : 'https://mr-crab-black.github.io/ai-agent-scorecard';
       const card = `
 AI AGENT SCORECARD
 User: ${username}
