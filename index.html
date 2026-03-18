@@ -1390,8 +1390,9 @@
         const saved = await saveScorecard(score, username, repo, tier.name, archetype.name);
         if (saved) {
           updateShareBanner(saved.shareUrl);
-          loadLeaderboard();
         }
+        // Always refresh leaderboard after scoring
+        setTimeout(loadLeaderboard, 500);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'An unknown error occurred';
         showError(sanitizeErrorMessage(message));
